@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Avatar } from 'react-native-elements';
+import Constants from 'expo-constants';
+import { Avatar, Accessory } from 'react-native-elements';
 
 const ImagePickerExample = () => {
+
     const [image, setImage] = useState(null);
 
     useEffect(() => {
@@ -24,6 +26,7 @@ const ImagePickerExample = () => {
             aspect: [4, 3],
             quality: 1,
         });
+
         console.log(result);
 
         if (!result.cancelled) {
@@ -35,6 +38,7 @@ const ImagePickerExample = () => {
         <View>
             <Avatar
                 size="xlarge"
+
                 onPress={function () {
                     pickImage()
                 }}
