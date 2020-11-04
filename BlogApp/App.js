@@ -1,15 +1,15 @@
 import React from 'react';
-import {NavigationContainer, navigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import {  AntDesign ,Ionicons ,Entypo } from "@expo/vector-icons";
-import SignInScreenActivity from './Source/screens/SignInScreen'
-import SignUpScreenActivity from './Source/screens/SignUpScreen'
-import HomeScreenActivity from './Source/screens/Home'
-import ProfileScreenActivity from './Source/screens/ProfileScreen'
-import NotificationScreenActivity from './Source/screens/NotificationScreen'
-import IndividualPostScreen from './Source/screens/IndividualPost'
+import { AntDesign ,Ionicons, Entypo } from "@expo/vector-icons";
+import SignInScreenActivity from './Source/screens/SignInScreen';
+import SignUpScreenActivity from './Source/screens/SignUpScreen';
+import HomeScreenActivity from './Source/screens/Home';
+import ProfileScreenActivity from './Source/screens/ProfileScreen';
+import NotificationScreenActivity from './Source/screens/NotificationScreen';
+import PostScreenActivity from './Source/screens/PostScreen';
 import { AuthContext, AuthProvider } from "./Source/provider/AuthProvider";
 
 const AuthStack= createStackNavigator();
@@ -72,7 +72,7 @@ const HomeStackScreen=() =>{
     return (
         <HomeStack.Navigator initialRouteName="Home">
             <HomeStack.Screen name="Home" component={HomeScreenActivity} options={{ headerShown: false }} />
-            <HomeStack.Screen name="IndivialPost" component={IndividualPostScreen} options={{ headerShown: false }} />
+            <HomeStack.Screen name="PostScreen" component={PostScreenActivity} options={{ headerShown: false }} />
         </HomeStack.Navigator>
     )
 }

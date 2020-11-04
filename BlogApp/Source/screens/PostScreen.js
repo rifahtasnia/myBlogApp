@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Text, Button, View, StyleSheet, TextInput, FlatList } from 'react-native';
-import ScreenHeader from '../shareable/ScreenHeader';
-import { PostCard } from '../shareable/customCard';
+import React, {useState} from 'react';
+import { Text, View, StyleSheet, FlatList} from 'react-native';
+import ScreenHeader from '../components/ScreenHeader';
+import { PostCard } from '../components/CustomCard';
 import { Input } from "react-native-elements";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
-import { storeDataJSON,removeData } from "../Function/AsyncStorageFunction";
-import CommentList from '../shareable/CommentList'
+import { storeDataJSON } from "../Function/AsyncStorageFunction";
+import CommentList from '../components/CommentList';
 
 const months={
     0:"January",
@@ -22,26 +22,25 @@ const months={
     11:"December",
 }
 
-const IndividualPostScreen=(props)=>{
+const PostScreenActivity = (props) => {
     console.log(props)
     const post=props.route.params.posts
     const authorName=props.route.params.Name
     const currentUser=props.route.params.currUser
     const [commentsCount,setCommentCount]=useState(props.route.params.commentCount)
-    //const {likeCount,setLikeCount}=useState(0)
     const [likeCount,setLikeCount]=useState(props.route.params.likeCount)
     const[comments,setComments]=useState(props.route.params.comments)
     const [currentInputText,setCurrentInputText]=useState("")
     const [authorPostReactions, setAuthorPostReactions] = useState(props.route.params.authorPostReactions);
     
     console.log(props.route.params.likeCount+"authe "+likeCount)
-    //setCommentCount(props.route.params.commentCount)
-    return(
-    
-      <View style={styles.containerStyle}>  
-           <ScreenHeader props ={props} ></ScreenHeader>
-            <PostCard>
 
+    return (
+        <View style={styles.containerStyle}>  
+
+            <ScreenHeader props={props} ></ScreenHeader>
+
+            <PostCard> 
                 <FontAwesome name="user" size={25} color="#5b588a" style={{ width: 20, marginTop: 6, marginLeft: 5 }} />
                 <Text style={styles.authorTextSTyle}>{authorName}</Text>
                 <Text style={styles.dateStyle}>{post.postDate}</Text>
@@ -63,112 +62,106 @@ const IndividualPostScreen=(props)=>{
                 }}
             />
 
-            <AntDesign name="checkcircle" size={35} color="#6C63FF" style={{ marginBottom: 30, alignSelf: "center"}} 
+            <AntDesign name="checkcircle" size={35} color="#6C63FF" style={{ marginBottom: 30, alignSelf: "center" }}
+                onPress={function () {
+                    let authorPostCurrentReaction = { postId: post.key, reactor: currentUser, status: "comment", commentBody: currentInputText }
+                    authorPostReactions.push(authorPostCurrentReaction)
+                    let month = new Date().getMonth()
+                    let recentComment = { commenter: currentUser, commentBody: currentInputText, commentDate: new Date().getDate() + ' ' + months[month] + ',' + new Date().getFullYear(), key: commentsCount }
+                    comments.reverse()
+                    comments.push(recentComment)
 
-             onPress={function(){
-                let authorPostCurrentReaction={postId:post.key,reactor:currentUser,status:"comment",commentBody:currentInputText}
-                authorPostReactions.push(authorPostCurrentReaction)
-                let month=new Date().getMonth()
-                let recentComment={commenter:currentUser,commentBody:currentInputText,commentDate:new Date().getDate()+' '+months[month]+','+new Date().getFullYear(),key:commentsCount}
-                comments.reverse()
-                comments.push(recentComment)
-                
-                storeDataJSON(post.key+"Comment",comments)
-                storeDataJSON(post.Email+"Reaction",authorPostReactions)
-                console.log(post.Email+" "+post.key)
-                console.log(comments)
-                setCommentCount(comments.length)
-                comments.reverse()
-
-             }}
+                    storeDataJSON(post.key + "Comment", comments)
+                    storeDataJSON(post.Email + "Reaction", authorPostReactions)
+                    console.log(post.Email + " " + post.key)
+                    console.log(comments)
+                    setCommentCount(comments.length)
+                    comments.reverse()
+                }}
             />
 
-             <FlatList
+            <FlatList
                 data={comments}
                 extraData={comments}
-                renderItem={function({ item } ){
-                    return(
+                renderItem={function ({ item }) {
+                    return (
                         <CommentList comment={item} />
                     )
-                }} 
+                }}
             />
-      </View>
+        </View>
     )
 }
 
-const styles=StyleSheet.create({
-    authorTextSTyle:{
-        position:"absolute",
-        fontFamily:'serif',
+const styles = StyleSheet.create({
+
+    authorTextSTyle: {
+        position: "absolute",
+        fontFamily: 'serif',
         fontSize: 25,
-        color:"#5b588a",
+        color: "#5b588a",
         marginLeft: 30
     },
 
-    dateStyle:{
-        color:"#5b588a",
+    dateStyle: {
+        color: "#5b588a",
         fontSize: 10,
-        fontStyle:'italic',
+        fontStyle: 'italic',
         marginTop: 3,
         marginLeft: 5,
         marginBottom: 10
     },
 
     postBodyStyle:{
-        fontFamily:'serif',
-        marginBottom:10,
-        color:"#000",
+        fontFamily: 'serif',
+        marginBottom: 10,
+        color: "#000",
         fontSize: 20,
         marginLeft: 5
     },
 
     inputStyle:{
-        color:"#5b588a",
-        borderColor:"#5b588a",
-        marginHorizontal:20,
-        marginTop:10,
+        color: "#5b588a",
+        borderColor: "#5b588a",
+        marginHorizontal: 20,
+        marginTop: 10,
     },
 
     containerStyle:{
         flex:1
     },
 
-    likeTextStyle:{
-        marginBottom:3,
-        fontSize:13,
-        fontFamily:'serif',
-        color:"#6C63FF",
-        marginLeft: 5,
-        width:60,
-        left:30,
-        position:"absolute",
-        bottom:0
-    },
     commentTextStyle:{
-        marginBottom:3,
         fontSize: 13,
-        fontFamily:'serif',
+        fontFamily: 'serif',
         color:"#6C63FF",
         width:90,
-        right:36,
+        right:30,
         position:"absolute",
-        bottom:0
+        bottom: 2
     },
    
     commentStyle:{
-        position:'absolute',
-        bottom:1,
-        right:10,
-        marginBottom: 2,
+        position: 'absolute',
+        bottom: 3,
+        right: 5
+    },
+
+    likeTextStyle: {
+        fontSize: 13,
+        fontFamily: 'serif',
+        color: "#6C63FF",
+        width: 60,
+        left: 30,
+        position: "absolute",
+        bottom: 2
     },
 
     likeStyle: {
-        marginLeft: 5,
-        marginBottom: 2,
-        bottom:0,
-        width:36,
-        left:0
+        bottom: 2,
+        width: 36,
+        left: 5
     },
 })
 
-export default IndividualPostScreen
+export default PostScreenActivity

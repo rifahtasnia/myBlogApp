@@ -1,59 +1,56 @@
-import React, { useState, useEffect } from "react";
-import {View,StyleSheet,Button,ActivityIndicator,Text,FlatList, ScrollView} from 'react-native'
-import {storeDataJSON, getDataJSON } from "../Function/AsyncStorageFunction";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {  Input } from "react-native-elements";
-import {AuthContext} from '../provider/AuthProvider'
-import {PostCard} from '../shareable/customCard'
-import ScreenHeader from '../shareable/ScreenHeader'
-import { FontAwesome, AntDesign, Entypo } from "@expo/vector-icons";
-import PostList from '../shareable/PostList'
+import React, { useState } from "react";
+import { View, StyleSheet, Button, ActivityIndicator, FlatList } from 'react-native';
+import { storeDataJSON, getDataJSON } from "../Function/AsyncStorageFunction";
+import { Input } from "react-native-elements";
+import { AuthContext } from '../provider/AuthProvider';
+import { PostCard } from '../components/CustomCard';
+import ScreenHeader from '../components/ScreenHeader';
+import PostList from '../components/PostList';
+import { Entypo } from "@expo/vector-icons";
 
 
 const months={
-    0:"January",
-    1:"February",
-    2:"March",
-    3:"April",
-    4:"May",
-    5:"June",
-    6:"July",
-    7:"August",
-    8:"September",
-    9:"October",
-    10:"November",
-    11:"December",
+    0: "January",
+    1: "February",
+    2: "March",
+    3: "April",
+    4: "May",
+    5: "June",
+    6: "July",
+    7: "August",
+    8: "September",
+    9: "October",
+    10: "November",
+    11: "December",
 }
 
-const HomeScreenActivity=(props)=>{
-    
-  console.log(props)
-  console.log("Ok")
-  const [RecentPost, setRecentPost] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+const HomeScreenActivity = (props) => {
+    console.log(props)
+    console.log("Ok")
+    const [RecentPost, setRecentPost] = useState("");
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-  const loadPosts = async () => {
-    console.log("response")
-    console.log(loading)
-    const response = await getDataJSON("Post");
+    const loadPosts = async () => {
+        console.log("Success")
+        console.log(loading)
+        const response = await getDataJSON("Post");
+        console.log(response)
+        console.log("No Response?")
     
-    console.log(response)
-    console.log("Didn't Response?")
-    
-    console.log(response.length)
-    if (response.length>0) {
-      setLoading(true)
-      setPosts(response);
-    }
-    
-  }; 
-      if(!loading){
+        console.log(response.length)
+        if (response.length > 0) {
+            setLoading(true)
+            setPosts(response);
+        }
+    };
+
+    if (!loading) {
         loadPosts()
-      }
-    return(
+    }
 
-<AuthContext.Consumer>
+    return (
+        <AuthContext.Consumer>
             {(auth) => (
                 <View style={{ flex: 1 }}>
                     <ScreenHeader props={props} ></ScreenHeader>
@@ -111,6 +108,7 @@ const styles=StyleSheet.create({
         marginRight:30,
         marginVertical:15,      
     },
+
     inputStyle:{
         color:"#5b588a"    
     }

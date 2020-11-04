@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import {Text, StyleSheet,View,Image,TouchableOpacity} from 'react-native';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import { Input, Button } from "react-native-elements";
-import { FontAwesome, Feather, AntDesign ,Ionicons ,Fontisto,Entypo } from "@expo/vector-icons";
-import {AuthContext} from "../provider/AuthProvider"
-import { AuthCard } from '../shareable/customCard'
+import { FontAwesome, AntDesign, Entypo } from "@expo/vector-icons";
+import { AuthContext } from "../provider/AuthProvider";
+import { AuthCard } from '../components/CustomCard';
 import { getDataJSON, clearAsyncStorage } from "../Function/AsyncStorageFunction";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
 
 
 const SignInScreenActivity=(props) =>{
@@ -24,7 +21,7 @@ const SignInScreenActivity=(props) =>{
                     </Image>
 
                     <AuthCard  > 
-                        <Text style={styles.titleView}>Welcome to Stark Expo !</Text> 
+                        <Text style={styles.titleView}>Welcome to Stark Expo!</Text> 
                         <Input 
                             inputStyle={styles.themeColor}
                             leftIcon={<FontAwesome name="envelope" size={24} color="#6C63FF" />}

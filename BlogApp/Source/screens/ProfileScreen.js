@@ -1,9 +1,9 @@
-import React from 'react'
-import {Text,Button,View,StyleSheet} from 'react-native'
-import ImagePickerExample from  '../shareable/ImageUpload'
-import ScreenHeader from '../shareable/ScreenHeader'
-import {AuthContext} from '../provider/AuthProvider'
-import {PostCard} from '../shareable/customCard'
+import React from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import ScreenHeader from '../components/ScreenHeader';
+import { AuthContext } from '../provider/AuthProvider';
+import { PostCard } from '../components/CustomCard';
+import ImagePickerExample from '../components/ImageUpload';
 
 const ProfileScreenActivity=(props)=>{
     return(
@@ -16,7 +16,7 @@ const ProfileScreenActivity=(props)=>{
                     </View>
 
                     <PostCard>
-                        <View style={{ backgroundColor: "#eae8ff", height: 300, borderColor: "#5b588a", borderWidth: 0 }}>
+                        <View style={{ backgroundColor: "#eae8ff", height: 300}}>
                             <Text style={styles.textSyle}>{auth.CurrentUser.name} </Text>
                             <Text style={styles.profileStyle}>Employee ID : {auth.CurrentUser.sid} </Text>
                             <Text style={styles.profileStyle}>Works at Stark Industries</Text>

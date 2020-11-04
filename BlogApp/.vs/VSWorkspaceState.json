@@ -5,12 +5,11 @@
     "\\.expo-shared",
     "\\assets",
     "\\Source",
-    "\\Source\\Components",
+    "\\Source\\components",
     "\\Source\\Function",
     "\\Source\\provider",
-    "\\Source\\screens",
-    "\\Source\\shareable"
+    "\\Source\\screens"
   ],
-  "SelectedNode": "\\Source\\screens\\SignUpScreen.js",
+  "SelectedNode": "\\Source\\components\\ImageUpload.js",
   "PreviewInSolutionExplorer": false
 }

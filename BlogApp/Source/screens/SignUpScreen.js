@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import {Text, StyleSheet,View,Image,TouchableOpacity} from 'react-native';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import { Input, Button } from "react-native-elements";
-import { FontAwesome, Feather, AntDesign ,Ionicons ,Fontisto,Entypo } from "@expo/vector-icons";
-import {AuthContext} from "../provider/AuthProvider"
-import {AuthCard} from '../shareable/customCard'
+import { FontAwesome, AntDesign ,Ionicons, Entypo } from "@expo/vector-icons";
+import { AuthCard } from '../components/CustomCard';
 import { storeDataJSON } from "../Function/AsyncStorageFunction";
 
 
@@ -21,7 +20,7 @@ const SignUpScreenActivity=(props) =>{
             </Image>
                    
             <AuthCard  >
-                <Text style={styles.titleView}>Welcome to Stark Expo !</Text>
+                <Text style={styles.titleView}>Welcome to Stark Expo!</Text>
                 <Input
                     inputStyle={styles.themeColor}
                     leftIcon={<Ionicons name="ios-person" size={24} color="#6C63FF" />}

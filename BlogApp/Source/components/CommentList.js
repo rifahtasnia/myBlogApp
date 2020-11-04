@@ -1,14 +1,14 @@
-import React , { useState, useEffect }  from 'react'
-import { View, Button, Flatlist, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
-import { FontAwesome, AntDesign, Entypo} from '@expo/vector-icons';
-import {CommentCard} from '../shareable/customCard'
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import {Entypo} from '@expo/vector-icons';
+import { CommentCard } from '../components/CustomCard';
 
 const CommentList=(props)=>{
     const comment=props.comment
     const commenter=comment.commenter
     const commentBody=comment.commentBody
     const date=comment.commentDate
-    console.log(commentBody+" laal")
+    console.log(commentBody+"...Successfully comment posted")
     return(
         <View>
             <CommentCard>

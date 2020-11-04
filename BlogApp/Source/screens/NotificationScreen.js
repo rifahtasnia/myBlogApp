@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import ScreenHeader from '../shareable/ScreenHeader'
-import {Text,Button,View,ActivityIndicator,FlatList} from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getDataJSON, storeDataJSON } from "../Function/AsyncStorageFunction";
-import NotificationList from '../shareable/NotificationList'
+import React, { useState } from 'react';
+import { View, ActivityIndicator, FlatList } from 'react-native';
+import { getDataJSON } from "../Function/AsyncStorageFunction";
+import ScreenHeader from '../components/ScreenHeader';
+import NotificationList from '../components/NotificationList';
 
 
 const NotificationScreenActivity = (props) => {

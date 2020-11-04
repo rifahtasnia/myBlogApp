@@ -4,9 +4,7 @@ import {StyleSheet,View} from 'react-native';
 const AuthCard=(props)=>{
     return(
         <View style={styles.authCardStyle}>
-           
-                {props.children}
-            
+            {props.children}
         </View>
     )
 }
@@ -22,7 +20,7 @@ const PostCard=(props)=>{
 const CommentCard=(props)=>{
     return(
         <View style={styles.commentCardStyle}>
-             {props.children}
+            {props.children}
         </View>
     )
 }
@@ -30,7 +28,7 @@ const CommentCard=(props)=>{
 const NotificationCard=(props)=>{
     return(
         <View style={styles.notificationCardStyle}>
-             {props.children}
+            {props.children}
         </View>
     )
 }

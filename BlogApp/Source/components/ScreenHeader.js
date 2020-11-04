@@ -1,7 +1,6 @@
-import React from 'react'
-import {Header} from "react-native-elements";
-import {StyleSheet} from 'react-native';
-import {AuthContext} from '../provider/AuthProvider';
+import React from 'react';
+import { Header } from "react-native-elements";
+import { AuthContext } from '../provider/AuthProvider';
 
 const ScreenHeader=({props})=>{
     return(

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Button, Flatlist, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
-import { NotificationCard } from '../shareable/customCard';
-import { FontAwesome, AntDesign } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { NotificationCard } from '../components/CustomCard';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 
