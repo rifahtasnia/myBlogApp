@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.expo",
+    "\\.expo-shared",
+    "\\assets",
+    "\\Source",
+    "\\Source\\Components",
+    "\\Source\\Function",
+    "\\Source\\provider",
+    "\\Source\\screens",
+    "\\Source\\shareable"
+  ],
+  "SelectedNode": "\\Source\\screens\\SignUpScreen.js",
+  "PreviewInSolutionExplorer": false
+}
