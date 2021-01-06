@@ -11,9 +11,24 @@ import ProfileScreenActivity from './Source/screens/ProfileScreen';
 import NotificationScreenActivity from './Source/screens/NotificationScreen';
 import PostScreenActivity from './Source/screens/PostScreen';
 import { AuthContext, AuthProvider } from "./Source/provider/AuthProvider";
+import * as firebase from "firebase";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBVc9nyImnFTmk7WdZKyZqpSt43xw-oiu8",
+    authDomain: "myblogapp-25461.firebaseapp.com",
+    projectId: "myblogapp-25461",
+    storageBucket: "myblogapp-25461.appspot.com",
+    messagingSenderId: "1025871545058",
+    appId: "1:1025871545058:web:f9c38a202931a2d5e194bb"
+};
+// Initialize Firebase
+if (!firebase.apps.lenght) {
+    firebase.initializeApp(firebaseConfig);
+}
 
 const AuthStack= createStackNavigator();
-const HomeStack =createStackNavigator();
+const HomeStack = createStackNavigator();
+const NotificationStack = createStackNavigator();
 const HomeTab = createMaterialBottomTabNavigator();
 const AppDrawer = createDrawerNavigator();
 
@@ -46,7 +61,7 @@ const HomeTabScreen = () => {
                   />
                   <HomeTab.Screen
                       name="Notification"
-                      children={() => <NotificationScreenActivity currentUser={auth.CurrentUser} />}
+                      component={NotificationStackScreen}
                       options={{
                           tabBarLabel: "Notifications",
                           tabBarIcon: ({ focused }) =>
@@ -67,6 +82,14 @@ const HomeTabScreen = () => {
     );
 };
 
+const NotificationStackScreen = () => {
+    return (
+        <NotificationStack.Navigator initialRouteName="Notification">
+            <NotificationStack.Screen name="Notification" component={NotificationScreenActivity} options={{ headerShown: false }} />
+            <NotificationStack.Screen name="PostScreen" component={PostScreenActivity} options={{ headerShown: false }} />
+        </NotificationStack.Navigator>
+    )
+}
 
 const HomeStackScreen=() =>{
     return (

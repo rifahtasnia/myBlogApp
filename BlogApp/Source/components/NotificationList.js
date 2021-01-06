@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect} from 'react';
+import { View, Button, Flatlist, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { NotificationCard } from '../components/CustomCard';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -11,33 +11,27 @@ const NotificationList=(props)=>{
     const nav=props.nav
     const [iconName, setIconName] = useState("thumbs-up")
     const [statement ,setStatement]=useState("liked your post")
-    const [check,setCheck]=useState(false)
-    console.log(notification.status)
    
-
     const checkNotificationStatus = () => {
-        if (notification.status === "comment") {
+        if (notification.data.body[0] === "c" || notification.data.body[0] === "r") {
             setIconName("comments")
             setStatement("commented on your post")
         }
-        setCheck(true)
     }
 
-    console.log(notification.reactor.email);
-
-    if (!check)
+    useEffect(() => {
         checkNotificationStatus()
+    }, [])
 
     return (
         <View>
             <NotificationCard>
                 <FontAwesome name={iconName} size={18} color="#5b588a" style={{marginTop: 10, marginLeft: 5 }}/>
-                <Text style={styles.commenter}>{notification.reactor.name} </Text>
+                <Text style={styles.commenter}>{notification.data.name} </Text>
                 <Text></Text>
-                <Text style = {styles.stateMentStyle}>{statement} </Text>
+                <Text style={styles.stateMentStyle}>{notification.data.body} </Text>
             </NotificationCard>
-        </View>
-       
+        </View>      
     )
 }
 
@@ -60,5 +54,9 @@ const styles = StyleSheet.create({
         alignSelf: "flex-end",
     },
 
+    iconStyle: {
+        width: 20,
+        position: "absolute",
+    }
 })
 export default NotificationList

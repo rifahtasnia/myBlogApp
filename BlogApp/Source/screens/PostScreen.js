@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { Text, View, StyleSheet, FlatList} from 'react-native';
 import ScreenHeader from '../components/ScreenHeader';
 import { PostCard } from '../components/CustomCard';
@@ -6,6 +6,8 @@ import { Input } from "react-native-elements";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
 import { storeDataJSON } from "../Function/AsyncStorageFunction";
 import CommentList from '../components/CommentList';
+import * as firebase from 'firebase'
+import "firebase/firestore";
 
 const months={
     0:"January",
@@ -23,17 +25,44 @@ const months={
 }
 
 const PostScreenActivity = (props) => {
-    console.log(props)
-    const post=props.route.params.posts
-    const authorName=props.route.params.Name
-    const currentUser=props.route.params.currUser
-    const [commentsCount,setCommentCount]=useState(props.route.params.commentCount)
-    const [likeCount,setLikeCount]=useState(props.route.params.likeCount)
-    const[comments,setComments]=useState(props.route.params.comments)
-    const [currentInputText,setCurrentInputText]=useState("")
-    const [authorPostReactions, setAuthorPostReactions] = useState(props.route.params.authorPostReactions);
-    
-    console.log(props.route.params.likeCount+"authe "+likeCount)
+    let comment_ = []
+    const posts = props.route.params.posts
+    const postDate = props.route.params.postDate
+    const currUser = props.route.params.currUser
+    const [loading, setLoading] = useState(false);
+    const [comments, setComments] = useState(0)
+    const [commentsCount, setCommentCount] = useState(posts.data.comments)
+    const [currentInputText, setCurrentInputText] = useState("")
+    const loadComments = async () => {
+        setLoading(true)
+        firebase
+            .firestore()
+            .collection("posts")
+            .doc(posts.id)
+            .collection('comment_writer')
+            .orderBy("written_at", "desc")
+            .onSnapshot((querySnapshot) => {
+                let temp_comments = [];
+                querySnapshot.forEach((doc) => {
+                    temp_comments.push({
+                        id: doc.id,
+                        data: doc.data(),
+                    });
+                });
+                setComments(temp_comments);
+                console.log(temp_comments)
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                alert(error);
+            });
+
+    };
+
+    useEffect(() => {
+        loadComments();
+    }, []);
 
     return (
         <View style={styles.containerStyle}>  
@@ -42,12 +71,12 @@ const PostScreenActivity = (props) => {
 
             <PostCard> 
                 <FontAwesome name="user" size={25} color="#5b588a" style={{ width: 20, marginTop: 6, marginLeft: 5 }} />
-                <Text style={styles.authorTextSTyle}>{authorName}</Text>
-                <Text style={styles.dateStyle}>{post.postDate}</Text>
-                <Text style={styles.postBodyStyle}>{post.postText}</Text>
+                <Text style={styles.authorTextSTyle}>{posts.data.author}</Text>
+                <Text style={styles.dateStyle}>{postDate}</Text>
+                <Text style={styles.postBodyStyle}>{posts.data.body}</Text>
                 <FontAwesome name="thumbs-o-up" size={20} color="#6C63FF" style={styles.likeStyle} />
                 <FontAwesome name="comment-o" size={20} color="#6C63FF" style={styles.commentStyle} />
-                <Text style={styles.likeTextStyle} >{likeCount} Likes</Text>
+                <Text style={styles.likeTextStyle} >{posts.data.likes} Likes </Text>
                 <Text style={styles.commentTextStyle}>{commentsCount} Comments</Text>
             </PostCard>
             <Input
@@ -64,19 +93,32 @@ const PostScreenActivity = (props) => {
 
             <AntDesign name="checkcircle" size={35} color="#6C63FF" style={{ marginBottom: 30, alignSelf: "center" }}
                 onPress={function () {
-                    let authorPostCurrentReaction = { postId: post.key, reactor: currentUser, status: "comment", commentBody: currentInputText }
-                    authorPostReactions.push(authorPostCurrentReaction)
-                    let month = new Date().getMonth()
-                    let recentComment = { commenter: currentUser, commentBody: currentInputText, commentDate: new Date().getDate() + ' ' + months[month] + ',' + new Date().getFullYear(), key: commentsCount }
-                    comments.reverse()
-                    comments.push(recentComment)
+                    comment_ = {
+                        writer: currUser.displayName,
+                        comment_body: currentInputText,
+                        written_at: firebase.firestore.Timestamp.now(),
+                        writer_id: currUser.uid
 
-                    storeDataJSON(post.key + "Comment", comments)
-                    storeDataJSON(post.Email + "Reaction", authorPostReactions)
-                    console.log(post.Email + " " + post.key)
-                    console.log(comments)
-                    setCommentCount(comments.length)
-                    comments.reverse()
+                    }
+                    firebase.firestore().collection("notifications").doc(posts.data.userId).collection("notification_details").add({
+                        post: posts,
+                        name: currUser.displayName,
+                        body: "commented on your post"
+                    })
+                    for (let omment of comments) {
+                        console.log(omment)
+                        firebase.firestore().collection("notifications").doc(omment.data.writer_id).collection("notification_details").add({
+                            post: posts,
+                            name: currUser.displayName,
+                            body: "replied your comment"
+                        })
+                    }
+
+                    firebase.firestore().collection("posts").doc(posts.id).collection("comment_writer").add(comment_)
+                    firebase.firestore().collection("posts").doc(posts.id).update({
+                        comments: commentsCount + 1
+                    })
+                    setCommentCount(commentsCount + 1)
                 }}
             />
 
@@ -85,7 +127,7 @@ const PostScreenActivity = (props) => {
                 extraData={comments}
                 renderItem={function ({ item }) {
                     return (
-                        <CommentList comment={item} />
+                        <CommentList comments={item} />
                     )
                 }}
             />

@@ -17,8 +17,8 @@ const ProfileScreenActivity=(props)=>{
 
                     <PostCard>
                         <View style={{ backgroundColor: "#eae8ff", height: 300}}>
-                            <Text style={styles.textSyle}>{auth.CurrentUser.name} </Text>
-                            <Text style={styles.profileStyle}>Employee ID : {auth.CurrentUser.sid} </Text>
+                            <Text style={styles.textSyle}>{auth.CurrentUser.displayName}</Text>
+                            <Text style={styles.profileStyle}>{auth.CurrentUser.SID}</Text>
                             <Text style={styles.profileStyle}>Works at Stark Industries</Text>
                             <Text style={styles.profileStyle}>Malibu, California</Text>
                         </View>

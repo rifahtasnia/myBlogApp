@@ -1,88 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { PostCard } from '../components/CustomCard';
 import { getDataJSON, storeDataJSON } from "../Function/AsyncStorageFunction"; 
 import { FontAwesome } from '@expo/vector-icons';
-
+import { AuthContext } from '../provider/AuthProvider';
+import * as firebase from 'firebase'
+import "firebase/firestore";
 
 
 const PostList =(props)=>{
    
-    const posts=props.posts
-    const nav=props.nav
-    const currUser=props.currentUser
-  
-    const [Name, setName] = useState("");
+    const posts = props.posts
+    const nav = props.nav
+    const currUser = props.currentUser
+
     const [iconName, setIconName] = useState("thumbs-o-up")
-    const [loading, setLoading] = useState(false);
-    const [likeCount,setLikeCount] = useState(0)
-    const [commentCount,setCommentCount] = useState(0)
-    const [comments,setComments] = useState([]);
-    
-   
+
+    const [likeCount, setLikeCount] = useState(posts.data.likes)
     const [authorPostReactions, setAuthorPostReactions] = useState([]);
-    const [liker, setLikers] = useState([]);
+
+    let dateObj = new Date(posts.data.created_at.seconds * 1000)
+    dateObj = "" + dateObj.toUTCString()
+    let postDate = dateObj.substr(0, dateObj.length - 13)
+
+    return (
 
 
-    const FindUser=async()=>{
-     
-        let response = await getDataJSON(posts.Email)
-        let postReaction =await getDataJSON(posts.Email+"Reaction")
-        let postLiker = await getDataJSON(posts.key+"likes")
-        let postComments = await getDataJSON(posts.key+"Comment")
-        if (postComments.length > 0) {
-                setComments(postComments)
-                setCommentCount(postComments.length)
-        }
+        <PostCard>
 
-        if (postLiker.length > 0) {
-            setLikeCount(postLiker.length)
-            setLikers(postLiker)
-            setAuthorPostReactions(postReaction)
-        }
-        setName(response.name)
-        setLoading(true)
+            <Text style={styles.authorNameStyle}>{posts.data.author}</Text>
+            <Text style={styles.dateStyle}>{postDate}</Text>
+            <Text style={styles.postBodyStyle}>{posts.data.body}</Text>
+            <FontAwesome name="comment-o" size={20} color="#6C63FF" style={styles.commentStyle}
+                onPress={function () {
+                    nav.navigation.navigate("PostScreen", { posts, currUser, postDate });
+                }} />
+            <FontAwesome name={iconName} size={20} color="#6C63FF" style={styles.likeStyle}
+                onPress={function () {
+                    setIconName("thumbs-up")
 
-    }
-    if (!loading) {
-        FindUser()
-    }
+                    firebase.firestore().collection("posts").doc(posts.id).collection("likers").doc(currUser.uid).set({
+                        liker: currUser.displayName
+                    })
+                    firebase.firestore().collection("posts").doc(posts.id).update({
+                        likes: likeCount + 1
+                    })
+                    firebase.firestore().collection("notifications").doc(posts.data.userId).collection("notification_details").add({
+                        post: posts,
+                        name: currUser.displayName,
+                        body: "liked your post"
+                    })
+                    let a = likeCount + 1
+                    setLikeCount(a)
 
-    if (loading) {
-        return (
-            <PostCard>
-                <Text style={styles.authorNameStyle}>{Name}</Text>
-                <Text style={styles.dateStyle}>{posts.postDate}</Text>
-                <Text style={styles.postBodyStyle}>{posts.postText}</Text>
-                <FontAwesome name="comment-o" size={20} color="#6C63FF" style={styles.commentStyle}
-                    onPress={function () {
-                        nav.navigation.navigate("PostScreen", { posts, Name, comments, likeCount, commentCount, authorPostReactions, currUser });
-                        console.log("commento")
-                        console.log(likeCount + " " + commentCount)
-                    }} />
-                <FontAwesome name={iconName} size={20} color="#6C63FF" style={styles.likeStyle}
-                    onPress={function () {
-                        setIconName("thumbs-up")
-                        let a = likeCount + 1
-                        let authorPostCurrentReaction = { postId: posts.key, reactor: currUser, status: "like" }
-                        authorPostReactions.push(authorPostCurrentReaction)
-                        storeDataJSON(posts.Email + "Reaction", authorPostReactions)
-                        liker.push(currUser)
-                        setLikeCount(a)
-                        storeDataJSON(posts.key + "likes", liker)
-                    }} />
-                <Text style={styles.likeTextStyle} >{likeCount} Likes</Text>
-                <Text style={styles.commentTextStyle}>{commentCount} Comments</Text>
-            </PostCard>
-        )
-    }
-    else {
-        return (
-            <View style={{ flex: 1, justifyContent: "center" }}>
-                <ActivityIndicator size="large" color="red" animating={true} />
-            </View>
-        )
-    }
+                }} />
+
+            <Text style={styles.likeTextStyle} >{likeCount} Likes</Text>
+            <Text style={styles.commentTextStyle}>{posts.data.comments} Comments</Text>
+        </PostCard>
+    );
 }
 
 const styles = StyleSheet.create({

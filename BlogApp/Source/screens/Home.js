@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Button, ActivityIndicator, FlatList } from 'react-native';
 import { storeDataJSON, getDataJSON } from "../Function/AsyncStorageFunction";
 import { Input } from "react-native-elements";
@@ -7,47 +7,46 @@ import { PostCard } from '../components/CustomCard';
 import ScreenHeader from '../components/ScreenHeader';
 import PostList from '../components/PostList';
 import { Entypo } from "@expo/vector-icons";
+import * as firebase from 'firebase'
+import "firebase/firestore";
 
-
-const months={
-    0: "January",
-    1: "February",
-    2: "March",
-    3: "April",
-    4: "May",
-    5: "June",
-    6: "July",
-    7: "August",
-    8: "September",
-    9: "October",
-    10: "November",
-    11: "December",
-}
 
 const HomeScreenActivity = (props) => {
-    console.log(props)
-    console.log("Ok")
+    console.log("OK")
     const [RecentPost, setRecentPost] = useState("");
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
+    let ref = ""
+
 
     const loadPosts = async () => {
-        console.log("Success")
-        console.log(loading)
-        const response = await getDataJSON("Post");
-        console.log(response)
-        console.log("No Response?")
-    
-        console.log(response.length)
-        if (response.length > 0) {
-            setLoading(true)
-            setPosts(response);
-        }
+        setLoading(true)
+        firebase
+            .firestore()
+            .collection("posts")
+            .orderBy("created_at", "desc")
+            .onSnapshot((querySnapshot) => {
+                let temp_posts = [];
+                querySnapshot.forEach((doc) => {
+                    temp_posts.push({
+                        id: doc.id,
+                        data: doc.data(),
+                    });
+                });
+                setPosts(temp_posts);
+                console.log("Temp")
+                console.log(temp_posts)
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                alert(error);
+            });
     };
 
-    if (!loading) {
-        loadPosts()
-    }
+    useEffect(() => {
+        loadPosts();
+    }, []);
 
     return (
         <AuthContext.Consumer>
@@ -72,23 +71,33 @@ const HomeScreenActivity = (props) => {
                                 title="Post"
                                 titleStyle={{ color: "white" }}
                                 onPress={function () {
-                                    posts.reverse()
-                                    let month = new Date().getMonth()
-                                    let postDetails = { key: posts.length + 1, Email: auth.CurrentUser.email, postText: RecentPost, postDate: 'Posted on ' + new Date().getDate() + ' ' + months[month] + ',' + new Date().getFullYear() }
-                                    let allPost = posts.copyWithin()
-                                    allPost.push(postDetails)
-                                    setPosts(allPost)
-                                    posts.reverse()
-                                    storeDataJSON("Post", posts)
+                                    setLoading(true)
+                                    console.log("Show")
+                                    firebase.firestore().collection("posts").add({
+                                        userId: auth.CurrentUser.uid,
+                                        body: RecentPost,
+                                        author: auth.CurrentUser.displayName,
+                                        created_at: firebase.firestore.Timestamp.now(),
+                                        likes: 0,
+                                        comments: 0,
+                                    }).then(() => {
+                                        setLoading(false)
+                                        alert("Post Created")
+
+                                    }).catch((error) => {
+                                        setLoading(false)
+                                        alert(error)
+                                    })
+
                                 }} />
                         </View>
                     </PostCard>
-                    {loading ?
+
+                    {!loading ?
                         <FlatList
                             data={posts}
                             extraData={posts}
                             renderItem={function ({ item }) {
-                                console.log(posts.length + " post length")
                                 return (
                                     <PostList posts={item} nav={props} currentUser={auth.CurrentUser} />
                                 )
